@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FacturaCO — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --accent:#00b4c8;--accent-dark:#0097aa;--accent-light:#e0f7fa;
+  --brand:#2ec9a0;
+  --navy:#0d2d3a;--navy2:#1a4a5e;
+  --border:#dde3e8;--bg:#f0f4f8;--white:#fff;
+  --muted:#5a6a7a;--light:#7a8fa6;
+  --green:#1e7e34;--red:#c0392b;--orange:#c2410c;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#1a1a1a;font-size:13px;}
+
+/* TOP BAR */
+.topbar{background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:50px;}
+.tl{display:flex;align-items:center;gap:8px;}
+.tmark{width:26px;height:26px;background:var(--brand);border-radius:5px;display:flex;align-items:center;justify-content:center;}
+.tname{font-size:14px;font-weight:700;color:#fff;}
+.tname span{color:var(--brand);}
+.tr{display:flex;align-items:center;gap:10px;}
+.dpill{font-size:10px;color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:3px 8px;}
+.upill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:4px 12px 4px 6px;}
+.av{width:24px;height:24px;border-radius:50%;background:var(--brand);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--navy);}
+.un{font-size:12px;color:rgba(255,255,255,0.8);}
+.ur{font-size:10px;color:rgba(255,255,255,0.35);}
+
+/* LAYOUT */
+.wrap{display:flex;height:calc(100vh - 50px);}
+
+/* SIDEBAR */
+.sb{width:210px;background:var(--white);border-right:1px solid var(--border);padding:12px 10px;overflow-y:auto;flex-shrink:0;}
+.sb-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--light);padding:8px 10px 5px;margin-top:6px;display:block;}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;font-size:12px;color:var(--muted);margin-bottom:2px;cursor:pointer;user-select:none;}
+.ni:hover{background:var(--bg);color:#1a1a1a;}
+.ni.on{background:var(--accent-light);color:var(--accent-dark);font-weight:600;}
+.ni svg{flex-shrink:0;}
+.nbadge{margin-left:auto;background:var(--red);color:#fff;border-radius:10px;padding:1px 6px;font-size:8px;font-weight:700;}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:22px;}
+.pg{display:none;}
+.pg.on{display:block;}
+
+/* PAGE HEADER */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.ptitle{font-size:20px;font-weight:700;color:var(--navy);}
+.psub{font-size:12px;color:var(--muted);margin-top:3px;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif;}
+.btn-n{background:var(--navy);color:#fff;}
+.btn-o{background:var(--white);color:var(--muted);border:1px solid var(--border);}
+
+/* KPIS */
+.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:9px;padding:14px;}
+.kl{font-size:9px;color:var(--light);text-transform:uppercase;letter-spacing:.06em;}
+.kv{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:500;margin:5px 0 2px;}
+.kv.g{color:var(--green);} .kv.r{color:var(--red);} .kv.o{color:var(--orange);} .kv.b{color:var(--accent-dark);}
+.kc{font-size:9px;color:var(--light);}
+.kc.up{color:var(--green);}
+
+/* TABLE */
+.tc{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.ttb{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.ttl{font-size:13px;font-weight:600;color:var(--navy);}
+.srch{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:6px 12px;font-size:12px;color:#1a1a1a;width:190px;font-family:'Inter',sans-serif;outline:none;}
+table{width:100%;border-collapse:collapse;}
+thead{background:#f7f9fb;}
+th{padding:9px 14px;text-align:left;font-size:9px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;}
+td{padding:10px 14px;font-size:12px;border-bottom:1px solid #f0f4f8;}
+tbody tr{cursor:pointer;}
+tbody tr:hover td{background:#fafcfd;}
+tbody tr:last-child td{border-bottom:none;}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px;}
+
+/* BADGES */
+.bdg{padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;font-family:'JetBrains Mono',monospace;}
+.bdg.paid{background:#e6f4ea;color:var(--green);}
+.bdg.pending{background:#fff8e1;color:var(--orange);}
+.bdg.overdue{background:#fde8e8;color:var(--red);}
+.bdg.partial{background:var(--accent-light);color:var(--accent-dark);}
+.bdg.active{background:#e6f4ea;color:var(--green);}
+.bdg.expired{background:#fde8e8;color:var(--red);}
+.bdg.inactive{background:#f0f4f8;color:var(--light);}
+
+/* DASHBOARD */
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px;}
+.ctl{font-size:9px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.ir{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f0f4f8;font-size:12px;}
+.ir:last-child{border-bottom:none;}
+.in{font-weight:600;color:var(--navy);}
+.inum{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--light);}
+.iamt{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;}
+.cfr{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+.cfmo{width:22px;font-size:9px;color:var(--light);font-family:'JetBrains Mono',monospace;}
+.cfbw{flex:1;background:var(--bg);border-radius:2px;height:5px;}
+.cfb{height:5px;border-radius:2px;}
+.cfb.e{background:var(--accent);opacity:.7;} .cfb.r{background:var(--brand);}
+.cfam{width:34px;font-size:9px;text-align:right;color:var(--light);font-family:'JetBrains Mono',monospace;}
+
+/* REMINDER ROWS */
+.rr{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;}
+.rr:last-child{border-bottom:none;}
+.rn{font-weight:600;color:var(--navy);}
+.rs{font-size:10px;color:var(--muted);}
+.rd{margin-left:auto;font-size:11px;font-weight:700;white-space:nowrap;}
+.rd.urg{color:var(--red);} .rd.wrn{color:var(--orange);}
+
+/* INFO BOX */
+.ibox{background:#fff8e1;border:1px solid #f59e0b;border-radius:7px;padding:9px 12px;font-size:11px;color:#7c5c00;line-height:1.6;margin-bottom:14px;}
+
+/* OVERLAY */
+.ov{display:none;position:fixed;inset:0;background:rgba(13,45,58,.45);z-index:200;}
+.ov.on{display:flex;align-items:flex-start;justify-content:flex-end;}
+.pnl{width:400px;height:100vh;background:var(--white);border-left:1px solid var(--border);overflow-y:auto;}
+.pnh{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--white);z-index:1;}
+.pntitle{font-size:13px;font-weight:700;color:var(--navy);}
+.pnx{width:26px;height:26px;border-radius:5px;background:var(--bg);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;line-height:1;}
+.pnb{padding:18px;}
+.sec{margin-bottom:18px;}
+.sectl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-dark);margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid #f7f9fb;font-size:12px;}
+.row:last-child{border-bottom:none;}
+.row .lb{color:var(--muted);}
+.row .vl{font-weight:500;color:var(--navy);text-align:right;}
+.row .vl.g{color:var(--green);} .row .vl.r{color:var(--red);} .row .vl.o{color:var(--orange);}
+.row .vl.ac{color:var(--accent-dark);font-family:'JetBrains Mono',monospace;}
+.row .vl.big{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;}
+.pw{background:var(--bg);border-radius:4px;height:5px;margin:5px 0;}
+.pb{height:5px;border-radius:4px;background:linear-gradient(90deg,var(--brand),var(--accent));}
+.pls{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);}
+.tl{margin-top:4px;}
+.ti{display:flex;gap:9px;margin-bottom:0;}
+.tlt{display:flex;flex-direction:column;align-items:center;width:16px;}
+.tld{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.tld.dn{background:var(--brand);}
+.tld.pd{background:var(--border);}
+.tll{width:1px;flex:1;background:var(--border);margin:3px 0;}
+.tic{flex:1;padding-bottom:12px;}
+.tia{font-size:11px;font-weight:500;color:var(--navy);}
+.tim{font-size:9px;color:var(--muted);margin-top:1px;}
+.acts{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px;}
+.act{flex:1;min-width:90px;padding:8px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--muted);font-family:'Inter',sans-serif;text-align:center;}
+.act.pr{background:var(--navy);color:#fff;border-color:var(--navy);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="tl">
+    <div class="tmark">
+      <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><rect x="1" y="1" width="5" height="6" rx="1" fill="#0d2d3a"/><rect x="8" y="1" width="5" height="3" rx="1" fill="#0d2d3a"/><rect x="8" y="6" width="5" height="7" rx="1" fill="#0d2d3a"/><rect x="1" y="9" width="5" height="4" rx="1" fill="#0d2d3a"/></svg>
+    </div>
+    <span class="tname">Factura<span>CO</span></span>
+  </div>
+  <div class="tr">
+    <span class="dpill">DEMO</span>
+    <div class="upill"><div class="av">JV</div><span class="un">Julian Vargas</span><span class="ur">Admin</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="sb">
+    <span class="sb-lbl">Principal</span>
+    <div class="ni on" id="nav-dashboard" data-p="dashboard" onclick="goTo(this)">
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><rect x="1" y="1" width="4" height="4" rx=".8" fill="currentColor"/><rect x="7" y="1" width="5" height="4" rx=".8" fill="currentColor"/><rect x="1" y="7" width="5" height="5" rx=".8" fill="currentColor"/><rect x="8" y="7" width="4" height="5" rx=".8" fill="currentColor"/></svg>
+      Panel Principal
+    </div>
+    <div class="ni" id="nav-clients" data-p="clients" onclick="goTo(this)">
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><circle cx="6.5" cy="4" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M1 12c0-2.5 2.5-4 5.5-4s5.5 1.5 5.5 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Clientes
+    </div>
+    <span class="sb-lbl">Facturación</span>
+    <div class="ni" id="nav-contracts" data-p="contracts" onclick="goTo(this)">
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><rect x="2" y="1" width="9" height="11" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 4h5M4 6.5h5M4 9h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Contratos
+    </div>
+    <div class="ni" id="nav-serviceorders" data-p="serviceorders" onclick="goTo(this)">
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><rect x="2" y="1" width="9" height="11" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 4h5M4 6.5h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="9.5" cy="9.5" r="2.5" fill="white" stroke="currentColor" stroke-width="1.1"/><path d="M8.5 9.5h2M9.5 8.5v2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      Órdenes de Servicio
+    </div>
+    <div class="ni" id="nav-invoices" data-p="invoices" onclick="goTo(this)">
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><rect x="2" y="1" width="9" height="11" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M4 4h5M4 6.5h5M4 9h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Facturas
+      <span class="nbadge">3</span>
+    </div>
+    <div class="ni" id="nav-payments" data-p="payments" onclick="goTo(this)">
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><rect x="1" y="3" width="11" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M1 6h11" stroke="currentColor" stroke-width="1.2"/><circle cx="4" cy="8.5" r=".7" fill="currentColor"/></svg>
+      Pagos
+    </div>
+    <span class="sb-lbl">Reportes</span>
+    <div class="ni" id="nav-cashflow" data-p="cashflow" onclick="goTo(this)">
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><path d="M1 10L4 7l3 2.5L10.5 4l1.5 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 12h11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Flujo de Caja
+    </div>
+    <div class="ni" id="nav-reminders" data-p="reminders" onclick="goTo(this)">
+      <svg width="13" height="13" fill="none" viewBox="0 0 13 13"><path d="M6.5 1.5A4 4 0 0 0 2.5 5.5c0 3-1.5 4-1.5 4h11s-1.5-1-1.5-4a4 4 0 0 0-4-4z" stroke="currentColor" stroke-width="1.2"/><path d="M5 9.5c0 .83.67 1.5 1.5 1.5S8 10.33 8 9.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Recordatorios
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="pg on" id="pg-dashboard">
+      <div class="ph"><div><div class="ptitle">Buenos días, Julian 👋</div><div class="psub">Lunes 13 de Abril, 2026</div></div></div>
+      <div class="krow">
+        <div class="kpi"><div class="kl">Ingresos Este Mes</div><div class="kv g">$48.2M</div><div class="kc up">↑ 12% vs mes anterior</div></div>
+        <div class="kpi"><div class="kl">Facturas Pendientes</div><div class="kv o">$23.7M</div><div class="kc">8 facturas</div></div>
+        <div class="kpi"><div class="kl">Vencidas</div><div class="kv r">$7.1M</div><div class="kc">3 facturas</div></div>
+        <div class="kpi"><div class="kl">Contratos Activos</div><div class="kv b">14</div><div class="kc">3 por vencer</div></div>
+      </div>
+      <div class="dg">
+        <div class="card">
+          <div class="ctl">Facturas Recientes — haz clic para ver detalle</div>
+          <div class="ir" data-k="INV-041" onclick="openInvoice(this)"><div><div class="in">Grupo Éxito S.A.</div><div class="inum">INV-2026-0041</div></div><div style="text-align:right"><div class="iamt">$8.5M</div><span class="bdg pending">Pendiente</span></div></div>
+          <div class="ir" data-k="INV-039" onclick="openInvoice(this)"><div><div class="in">Bancolombia</div><div class="inum">INV-2026-0039</div></div><div style="text-align:right"><div class="iamt">$12.0M</div><span class="bdg paid">Pagada</span></div></div>
+          <div class="ir" data-k="INV-037" onclick="openInvoice(this)"><div><div class="in">Avianca Holdings</div><div class="inum">INV-2026-0037</div></div><div style="text-align:right"><div class="iamt">$5.2M</div><span class="bdg overdue">Vencida</span></div></div>
+          <div class="ir" data-k="INV-040" onclick="openInvoice(this)"><div><div class="in">Ecopetrol S.A.</div><div class="inum">INV-2026-0040</div></div><div style="text-align:right"><div class="iamt">$15.0M</div><span class="bdg partial">Parcial</span></div></div>
+        </div>
+        <div class="card">
+          <div class="ctl" style="display:flex;justify-content:space-between">Flujo de Caja — Millones COP<div style="display:flex;gap:8px;font-size:9px"><span style="color:var(--accent)">■ Esp.</span><span style="color:var(--brand)">■ Rec.</span></div></div>
+          <div class="cfr"><div class="cfmo">Ene</div><div class="cfbw"><div class="cfb e" style="width:75%"></div></div><div class="cfam">$38M</div></div>
+          <div class="cfr"><div class="cfmo"></div><div class="cfbw"><div class="cfb r" style="width:70%"></div></div><div class="cfam">$35M</div></div>
+          <div class="cfr"><div class="cfmo">Feb</div><div class="cfbw"><div class="cfb e" style="width:60%"></div></div><div class="cfam">$30M</div></div>
+          <div class="cfr"><div class="cfmo"></div><div class="cfbw"><div class="cfb r" style="width:55%"></div></div><div class="cfam">$27M</div></div>
+          <div class="cfr"><div class="cfmo">Mar</div><div class="cfbw"><div class="cfb e" style="width:90%"></div></div><div class="cfam">$45M</div></div>
+          <div class="cfr"><div class="cfmo"></div><div class="cfbw"><div class="cfb r" style="width:96%"></div></div><div class="cfam">$48M</div></div>
+          <div class="cfr"><div class="cfmo">Abr</div><div class="cfbw"><div class="cfb e" style="width:100%"></div></div><div class="cfam">$50M</div></div>
+          <div class="cfr"><div class="cfmo"></div><div class="cfbw"><div class="cfb r" style="width:40%"></div></div><div class="cfam">$20M</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENTS -->
+    <div class="pg" id="pg-clients">
+      <div class="ph"><div><div class="ptitle">Clientes</div><div class="psub">Administra tu cartera de clientes</div></div><button class="btn btn-n">+ Agregar Cliente</button></div>
+      <div class="tc">
+        <div class="ttb"><span class="ttl">Todos los Clientes (5)</span><input class="srch" placeholder="Buscar clientes..." oninput="doFilter('cli-tb', this.value)"></div>
+        <table><thead><tr><th>Empresa</th><th>NIT</th><th>Contacto</th><th>Contratos</th><th>Facturado</th><th>Estado</th></tr></thead>
+        <tbody id="cli-tb">
+          <tr data-k="exito" onclick="openClient(this)"><td><strong>Grupo Éxito S.A.</strong></td><td class="mono">890.903.308-9</td><td>María Torres</td><td>3</td><td class="mono">$45.2M COP</td><td><span class="bdg active">Activo</span></td></tr>
+          <tr data-k="bancolombia" onclick="openClient(this)"><td><strong>Bancolombia S.A.</strong></td><td class="mono">890.903.938-8</td><td>Carlos Restrepo</td><td>2</td><td class="mono">$120.0M COP</td><td><span class="bdg active">Activo</span></td></tr>
+          <tr data-k="avianca" onclick="openClient(this)"><td><strong>Avianca Holdings</strong></td><td class="mono">830.110.324-2</td><td>Andrea Gómez</td><td>1</td><td class="mono">$28.4M COP</td><td><span class="bdg active">Activo</span></td></tr>
+          <tr data-k="ecopetrol" onclick="openClient(this)"><td><strong>Ecopetrol S.A.</strong></td><td class="mono">899.999.068-1</td><td>Luis Martínez</td><td>4</td><td class="mono">$210.5M COP</td><td><span class="bdg active">Activo</span></td></tr>
+          <tr data-k="nutresa" onclick="openClient(this)"><td><strong>Grupo Nutresa</strong></td><td class="mono">860.002.130-7</td><td>Sofia Herrera</td><td>1</td><td class="mono">$18.0M COP</td><td><span class="bdg inactive">Inactivo</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- CONTRACTS -->
+    <div class="pg" id="pg-contracts">
+      <div class="ph"><div><div class="ptitle">Contratos</div><div class="psub">Contratos marco con tus clientes</div></div><button class="btn btn-n">+ Nuevo Contrato</button></div>
+      <div class="tc">
+        <table><thead><tr><th>Contrato</th><th>Cliente</th><th>Valor Total</th><th>Período</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr data-k="CNT-001" onclick="openContract(this)"><td><strong class="mono">CNT-2026-001</strong><br><span style="font-size:10px;color:var(--muted)">Consultoría TI</span></td><td>Grupo Éxito</td><td class="mono">$150M COP</td><td class="mono">Ene–Dic 2026</td><td><span class="bdg active">Activo</span></td></tr>
+          <tr data-k="CNT-002" onclick="openContract(this)"><td><strong class="mono">CNT-2026-002</strong><br><span style="font-size:10px;color:var(--muted)">Transformación Digital</span></td><td>Bancolombia</td><td class="mono">$480M COP</td><td class="mono">Feb 2026–Ene 2027</td><td><span class="bdg active">Activo</span></td></tr>
+          <tr data-k="CNT-018" onclick="openContract(this)"><td><strong class="mono">CNT-2025-018</strong><br><span style="font-size:10px;color:var(--muted)">Soporte y Mantenimiento</span></td><td>Avianca</td><td class="mono">$60M COP</td><td class="mono">Mar 2025–Feb 2026</td><td><span class="bdg expired">Vencido</span></td></tr>
+          <tr data-k="CNT-003" onclick="openContract(this)"><td><strong class="mono">CNT-2026-003</strong><br><span style="font-size:10px;color:var(--muted)">Plataforma de Analítica</span></td><td>Ecopetrol</td><td class="mono">$900M COP</td><td class="mono">Mar 2026–Feb 2028</td><td><span class="bdg active">Activo</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- SERVICE ORDERS -->
+    <div class="pg" id="pg-serviceorders">
+      <div class="ph"><div><div class="ptitle">Órdenes de Servicio</div><div class="psub">Autorizaciones de trabajo vinculadas a contratos</div></div><button class="btn btn-n">+ Nueva Orden</button></div>
+      <div class="tc">
+        <table><thead><tr><th>Orden</th><th>Contrato</th><th>Cliente</th><th>Valor Autorizado</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr data-k="SO-012" onclick="openSO(this)"><td><strong class="mono">OS-2026-0012</strong><br><span style="font-size:10px;color:var(--muted)">Fase 1 — Levantamiento</span></td><td class="mono">CNT-2026-001</td><td>Grupo Éxito</td><td class="mono">$45M COP</td><td><span class="bdg active">Activo</span></td></tr>
+          <tr data-k="SO-013" onclick="openSO(this)"><td><strong class="mono">OS-2026-0013</strong><br><span style="font-size:10px;color:var(--muted)">Fase 2 — Desarrollo</span></td><td class="mono">CNT-2026-002</td><td>Bancolombia</td><td class="mono">$120M COP</td><td><span class="bdg pending">Pendiente</span></td></tr>
+          <tr data-k="SO-014" onclick="openSO(this)"><td><strong class="mono">OS-2026-0014</strong><br><span style="font-size:10px;color:var(--muted)">Migración de Datos</span></td><td class="mono">CNT-2026-003</td><td>Ecopetrol</td><td class="mono">$80M COP</td><td><span class="bdg active">Activo</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- INVOICES -->
+    <div class="pg" id="pg-invoices">
+      <div class="ph"><div><div class="ptitle">Facturas</div><div class="psub">Facturas electrónicas con cumplimiento DIAN</div></div><button class="btn btn-n">+ Nueva Factura</button></div>
+      <div class="krow">
+        <div class="kpi"><div class="kl">Total Facturado</div><div class="kv o">$71.9M</div></div>
+        <div class="kpi"><div class="kl">Cobrado</div><div class="kv g">$48.2M</div></div>
+        <div class="kpi"><div class="kl">Pendiente</div><div class="kv o">$16.6M</div></div>
+        <div class="kpi"><div class="kl">Vencido</div><div class="kv r">$7.1M</div></div>
+      </div>
+      <div class="tc">
+        <div class="ttb"><span class="ttl">Todas las Facturas</span><input class="srch" placeholder="Buscar facturas..." oninput="doFilter('inv-tb', this.value)"></div>
+        <table><thead><tr><th>Factura</th><th>Cliente</th><th>Subtotal</th><th>IVA 19%</th><th>Total</th><th>Vencimiento</th><th>Estado</th></tr></thead>
+        <tbody id="inv-tb">
+          <tr data-k="INV-041" onclick="openInvoice(this)"><td class="mono">INV-2026-0041</td><td>Grupo Éxito</td><td class="mono">$7.14M</td><td class="mono">$1.36M</td><td class="mono" style="font-weight:600">$8.5M COP</td><td class="mono">20 Abr 2026</td><td><span class="bdg pending">Pendiente</span></td></tr>
+          <tr data-k="INV-040" onclick="openInvoice(this)"><td class="mono">INV-2026-0040</td><td>Ecopetrol</td><td class="mono">$12.6M</td><td class="mono">$2.4M</td><td class="mono" style="font-weight:600">$15.0M COP</td><td class="mono">15 Abr 2026</td><td><span class="bdg partial">Parcial</span></td></tr>
+          <tr data-k="INV-039" onclick="openInvoice(this)"><td class="mono">INV-2026-0039</td><td>Bancolombia</td><td class="mono">$10.08M</td><td class="mono">$1.92M</td><td class="mono" style="font-weight:600">$12.0M COP</td><td class="mono">08 Abr 2026</td><td><span class="bdg paid">Pagada</span></td></tr>
+          <tr data-k="INV-037" onclick="openInvoice(this)"><td class="mono">INV-2026-0037</td><td>Avianca</td><td class="mono">$4.37M</td><td class="mono">$0.83M</td><td class="mono" style="font-weight:600">$5.2M COP</td><td class="mono">31 Mar 2026</td><td><span class="bdg overdue">Vencida</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div class="pg" id="pg-payments">
+      <div class="ph"><div><div class="ptitle">Pagos</div><div class="psub">Pagos recibidos y abonos parciales</div></div><button class="btn btn-n">+ Registrar Pago</button></div>
+      <div class="tc">
+        <table><thead><tr><th>Fecha</th><th>Factura</th><th>Cliente</th><th>Monto</th><th>Método</th><th>Referencia</th><th>Por</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">08 Abr 2026</td><td class="mono">INV-2026-0039</td><td>Bancolombia</td><td class="mono" style="color:var(--green);font-weight:600">$12.0M COP</td><td>Transferencia</td><td class="mono">TXN-20260408-BC</td><td>Julian V.</td></tr>
+          <tr><td class="mono">05 Abr 2026</td><td class="mono">INV-2026-0038</td><td>Grupo Nutresa</td><td class="mono" style="color:var(--green);font-weight:600">$18.0M COP</td><td>Transferencia</td><td class="mono">TXN-20260405-GN</td><td>Julian V.</td></tr>
+          <tr><td class="mono">03 Abr 2026</td><td class="mono">INV-2026-0040</td><td>Ecopetrol</td><td class="mono" style="color:var(--accent-dark);font-weight:600">$7.5M COP <span class="bdg partial">Parcial</span></td><td>Transferencia</td><td class="mono">TXN-20260403-EC</td><td>Julian V.</td></tr>
+          <tr><td class="mono">25 Mar 2026</td><td class="mono">INV-2026-0036</td><td>Ecopetrol</td><td class="mono" style="color:var(--green);font-weight:600">$18.0M COP</td><td>Transferencia</td><td class="mono">TXN-20260325-EC</td><td>Julian V.</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+
+    <!-- CASH FLOW -->
+    <div class="pg" id="pg-cashflow">
+      <div class="ph"><div><div class="ptitle">Flujo de Caja</div><div class="psub">Proyección mensual vs. cobrado real — COP</div></div><button class="btn btn-o">Exportar Excel</button></div>
+      <div class="krow">
+        <div class="kpi"><div class="kl">Esperado Abr</div><div class="kv o">$50.0M</div></div>
+        <div class="kpi"><div class="kl">Recibido Abr</div><div class="kv g">$20.0M</div></div>
+        <div class="kpi"><div class="kl">Aún Pendiente</div><div class="kv o">$23.7M</div></div>
+        <div class="kpi"><div class="kl">Vencido</div><div class="kv r">$7.1M</div></div>
+      </div>
+      <div class="card">
+        <div class="ctl" style="display:flex;justify-content:space-between;align-items:center">Flujo Mensual — COP Millones<div style="display:flex;gap:12px;font-size:9px"><span style="color:var(--accent)">■ Esperado</span><span style="color:var(--brand)">■ Recibido</span><span style="color:#ccc">■ Proyectado</span></div></div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;align-items:flex-end;height:140px;padding-bottom:20px;border-bottom:1px solid var(--border);margin-bottom:10px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%"><div style="display:flex;gap:3px;align-items:flex-end"><div style="width:14px;background:var(--accent);opacity:.7;border-radius:3px 3px 0 0;height:80px"></div><div style="width:14px;background:var(--brand);border-radius:3px 3px 0 0;height:73px"></div></div><div style="font-size:9px;color:var(--light);font-family:'JetBrains Mono',monospace">Ene</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%"><div style="display:flex;gap:3px;align-items:flex-end"><div style="width:14px;background:var(--accent);opacity:.7;border-radius:3px 3px 0 0;height:62px"></div><div style="width:14px;background:var(--brand);border-radius:3px 3px 0 0;height:56px"></div></div><div style="font-size:9px;color:var(--light);font-family:'JetBrains Mono',monospace">Feb</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%"><div style="display:flex;gap:3px;align-items:flex-end"><div style="width:14px;background:var(--accent);opacity:.7;border-radius:3px 3px 0 0;height:96px"></div><div style="width:14px;background:var(--brand);border-radius:3px 3px 0 0;height:100px"></div></div><div style="font-size:9px;color:var(--light);font-family:'JetBrains Mono',monospace">Mar</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%"><div style="display:flex;gap:3px;align-items:flex-end"><div style="width:14px;background:var(--accent);opacity:.7;border-radius:3px 3px 0 0;height:110px"></div><div style="width:14px;background:var(--brand);border-radius:3px 3px 0 0;height:42px"></div></div><div style="font-size:9px;color:var(--light);font-family:'JetBrains Mono',monospace">Abr</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%"><div style="width:14px;background:#f0f4f8;border:1px dashed #ccc;border-radius:3px 3px 0 0;height:84px"></div><div style="font-size:9px;color:var(--light);font-family:'JetBrains Mono',monospace">May</div></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:flex-end;height:100%"><div style="width:14px;background:#f0f4f8;border:1px dashed #ccc;border-radius:3px 3px 0 0;height:70px"></div><div style="font-size:9px;color:var(--light);font-family:'JetBrains Mono',monospace">Jun</div></div>
+        </div>
+        <div style="font-size:10px;color:var(--light);text-align:right">Barras punteadas = proyectado</div>
+      </div>
+    </div>
+
+    <!-- REMINDERS -->
+    <div class="pg" id="pg-reminders">
+      <div class="ph"><div><div class="ptitle">Recordatorios</div><div class="psub">Notificaciones automáticas por WhatsApp y correo</div></div><button class="btn btn-o">Configurar Reglas</button></div>
+      <div class="ibox">3 recordatorios pendientes de envío — se envían automáticamente según las reglas configuradas.</div>
+      <div class="tc">
+        <div class="ttb"><span class="ttl">Recordatorios Pendientes</span></div>
+        <div class="rr"><span style="font-size:18px">💬</span><div><div class="rn">Avianca Holdings — INV-2026-0037</div><div class="rs">WhatsApp a Andrea Gómez · $5.2M COP vencido</div></div><span class="rd urg">12 días vencido</span></div>
+        <div class="rr"><span style="font-size:18px">📧</span><div><div class="rn">Grupo Éxito — INV-2026-0041</div><div class="rs">Correo a María Torres · $8.5M COP vence en 8 días</div></div><span class="rd wrn">Vence en 8 días</span></div>
+        <div class="rr"><span style="font-size:18px">💬</span><div><div class="rn">Ecopetrol — INV-2026-0040</div><div class="rs">WhatsApp a Luis Martínez · $7.5M COP restante</div></div><span class="rd wrn">Vence en 3 días</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="ov" id="ov" onclick="closeIfBg(event)">
+  <div class="pnl">
+    <div class="pnh"><span class="pntitle" id="pntitle">Detalle</span><div class="pnx" onclick="closePanel()">x</div></div>
+    <div class="pnb" id="pnb"></div>
+  </div>
+</div>
+
+<script>
+var INV = {
+  "INV-041":{num:"INV-2026-0041",client:"Grupo Exito S.A.",contact:"Maria Torres",email:"m.torres@exito.com.co",contract:"CNT-2026-001",order:"OS-2026-0012",sub:"$7,142,857",iva:"$1,357,143",total:"$8,500,000",issued:"01 Abr 2026",due:"20 Abr 2026",status:"pending",label:"Pendiente",paid:0,remaining:8500000,notes:"Entrega Fase 1 — levantamiento de requisitos y arquitectura.",tl:[{a:"Factura creada",by:"Julian V.",dt:"01 Abr 2026",ok:true},{a:"Aprobada por Julian V.",by:"Julian V.",dt:"01 Abr 2026",ok:true},{a:"Enviada al cliente",by:"Sistema",dt:"01 Abr 2026",ok:true},{a:"Pago recibido",by:"Pendiente",dt:"—",ok:false}]},
+  "INV-040":{num:"INV-2026-0040",client:"Ecopetrol S.A.",contact:"Luis Martinez",email:"l.martinez@ecopetrol.com.co",contract:"CNT-2026-003",order:"OS-2026-0014",sub:"$12,605,042",iva:"$2,394,958",total:"$15,000,000",issued:"28 Mar 2026",due:"15 Abr 2026",status:"partial",label:"Parcial",paid:7500000,remaining:7500000,notes:"Migracion de datos — Fase 1 completada.",tl:[{a:"Factura creada",by:"Julian V.",dt:"28 Mar 2026",ok:true},{a:"Aprobada",by:"Julian V.",dt:"28 Mar 2026",ok:true},{a:"Enviada al cliente",by:"Sistema",dt:"28 Mar 2026",ok:true},{a:"Pago parcial $7.5M recibido",by:"Julian V.",dt:"03 Abr 2026",ok:true},{a:"Pago restante pendiente",by:"—",dt:"Pendiente",ok:false}]},
+  "INV-039":{num:"INV-2026-0039",client:"Bancolombia S.A.",contact:"Carlos Restrepo",email:"c.restrepo@bancolombia.com.co",contract:"CNT-2026-002",order:"OS-2026-0013",sub:"$10,084,034",iva:"$1,915,966",total:"$12,000,000",issued:"25 Mar 2026",due:"08 Abr 2026",status:"paid",label:"Pagada",paid:12000000,remaining:0,notes:"Transformacion digital — Entrega Sprint 3.",tl:[{a:"Factura creada",by:"Julian V.",dt:"25 Mar 2026",ok:true},{a:"Aprobada",by:"Julian V.",dt:"25 Mar 2026",ok:true},{a:"Enviada al cliente",by:"Sistema",dt:"25 Mar 2026",ok:true},{a:"Pago completo recibido",by:"Julian V.",dt:"08 Abr 2026",ok:true}]},
+  "INV-037":{num:"INV-2026-0037",client:"Avianca Holdings",contact:"Andrea Gomez",email:"a.gomez@avianca.com",contract:"CNT-2025-018",order:"OS-2025-0099",sub:"$4,369,748",iva:"$830,252",total:"$5,200,000",issued:"01 Mar 2026",due:"31 Mar 2026",status:"overdue",label:"Vencida",paid:0,remaining:5200000,notes:"Soporte y mantenimiento — Q1 2026.",tl:[{a:"Factura creada",by:"Julian V.",dt:"01 Mar 2026",ok:true},{a:"Aprobada",by:"Julian V.",dt:"01 Mar 2026",ok:true},{a:"Enviada al cliente",by:"Sistema",dt:"01 Mar 2026",ok:true},{a:"Fecha vencida",by:"Sistema",dt:"31 Mar 2026",ok:true},{a:"Recordatorio WhatsApp enviado",by:"Sistema",dt:"03 Abr 2026",ok:true},{a:"Recordatorio email enviado",by:"Sistema",dt:"07 Abr 2026",ok:true},{a:"Pago recibido",by:"—",dt:"Pendiente",ok:false}]}
+};
+var CLI = {
+  exito:{name:"Grupo Exito S.A.",nit:"890.903.308-9",contact:"Maria Torres",email:"m.torres@exito.com.co",phone:"+57 4 604 0404",city:"Medellin",contracts:3,billed:"$45.2M COP"},
+  bancolombia:{name:"Bancolombia S.A.",nit:"890.903.938-8",contact:"Carlos Restrepo",email:"c.restrepo@bancolombia.com.co",phone:"+57 4 510 9000",city:"Medellin",contracts:2,billed:"$120.0M COP"},
+  avianca:{name:"Avianca Holdings",nit:"830.110.324-2",contact:"Andrea Gomez",email:"a.gomez@avianca.com",phone:"+57 1 587 7700",city:"Bogota",contracts:1,billed:"$28.4M COP"},
+  ecopetrol:{name:"Ecopetrol S.A.",nit:"899.999.068-1",contact:"Luis Martinez",email:"l.martinez@ecopetrol.com.co",phone:"+57 1 234 4000",city:"Bogota",contracts:4,billed:"$210.5M COP"},
+  nutresa:{name:"Grupo Nutresa",nit:"860.002.130-7",contact:"Sofia Herrera",email:"s.herrera@nutresa.com",phone:"+57 4 319 0000",city:"Medellin",contracts:1,billed:"$18.0M COP"}
+};
+var CON = {
+  "CNT-001":{num:"CNT-2026-001",client:"Grupo Exito S.A.",title:"Consultoria en Tecnologia de la Informacion",value:"$150,000,000 COP",start:"01 Ene 2026",end:"31 Dic 2026",status:"active",label:"Activo"},
+  "CNT-002":{num:"CNT-2026-002",client:"Bancolombia S.A.",title:"Transformacion Digital",value:"$480,000,000 COP",start:"01 Feb 2026",end:"31 Ene 2027",status:"active",label:"Activo"},
+  "CNT-018":{num:"CNT-2025-018",client:"Avianca Holdings",title:"Soporte y Mantenimiento",value:"$60,000,000 COP",start:"01 Mar 2025",end:"28 Feb 2026",status:"expired",label:"Vencido"},
+  "CNT-003":{num:"CNT-2026-003",client:"Ecopetrol S.A.",title:"Plataforma de Analitica de Datos",value:"$900,000,000 COP",start:"01 Mar 2026",end:"28 Feb 2028",status:"active",label:"Activo"}
+};
+var SOS = {
+  "SO-012":{num:"OS-2026-0012",contract:"CNT-2026-001",client:"Grupo Exito",desc:"Fase 1 — Levantamiento y Arquitectura",value:"$45,000,000 COP",start:"15 Ene 2026",end:"30 Abr 2026",status:"active",label:"Activo"},
+  "SO-013":{num:"OS-2026-0013",contract:"CNT-2026-002",client:"Bancolombia",desc:"Fase 2 — Desarrollo Backend",value:"$120,000,000 COP",start:"01 Mar 2026",end:"30 Jun 2026",status:"pending",label:"Pendiente"},
+  "SO-014":{num:"OS-2026-0014",contract:"CNT-2026-003",client:"Ecopetrol",desc:"Migracion e Integracion de Datos",value:"$80,000,000 COP",start:"15 Mar 2026",end:"31 May 2026",status:"active",label:"Activo"}
+};
+
+function goTo(el) { var page = el.getAttribute("data-p");
+  var pgs = document.querySelectorAll(".pg");
+  for (var i = 0; i < pgs.length; i++) { pgs[i].classList.remove("on"); }
+  var navs = document.querySelectorAll(".ni");
+  for (var j = 0; j < navs.length; j++) { navs[j].classList.remove("on"); }
+  var pg = document.getElementById("pg-" + page);
+  if (pg) pg.classList.add("on");
+  var nav = document.getElementById("nav-" + page);
+  if (nav) nav.classList.add("on");
+}
+
+function doFilter(tbId, val) {
+  var q = val.toLowerCase();
+  var tb = document.getElementById(tbId);
+  if (!tb) return;
+  var rows = tb.querySelectorAll("tr");
+  for (var i = 0; i < rows.length; i++) {
+    var tds = rows[i].querySelectorAll("td");
+    var found = q === "";
+    for (var j = 0; j < tds.length && !found; j++) {
+      if (tds[j].textContent.toLowerCase().indexOf(q) > -1) found = true;
+    }
+    rows[i].style.display = found ? "" : "none";
+  }
+}
+
+function showPanel(title, html) {
+  document.getElementById("pntitle").textContent = title;
+  document.getElementById("pnb").innerHTML = html;
+  document.getElementById("ov").classList.add("on");
+}
+function closePanel() { document.getElementById("ov").classList.remove("on"); }
+function closeIfBg(e) { if (e.target === document.getElementById("ov")) closePanel(); }
+
+function r(lb, vl, cls) {
+  var c = cls ? ' class="vl ' + cls + '"' : ' class="vl"';
+  return '<div class="row"><span class="lb">' + lb + '</span><span' + c + '>' + vl + '</span></div>';
+}
+
+function openInvoice(el) {
+  var id = el.getAttribute ? el.getAttribute("data-k") : el;
+  var inv = INV[id];
+  if (!inv) return;
+  var pct = inv.paid > 0 ? Math.round(inv.paid / (inv.paid + inv.remaining) * 100) : (inv.status === "paid" ? 100 : 0);
+  var sc = {paid:"g",pending:"o",overdue:"r",partial:"b"}[inv.status] || "";
+  var tl = "";
+  for (var i = 0; i < inv.tl.length; i++) {
+    var t = inv.tl[i];
+    var last = i === inv.tl.length - 1;
+    tl += '<div class="ti"><div class="tlt"><div class="tld ' + (t.ok ? "dn" : "pd") + '"></div>' + (!last ? '<div class="tll"></div>' : "") + '</div><div class="tic"><div class="tia">' + t.a + '</div><div class="tim">' + t.by + " - " + t.dt + '</div></div></div>';
+  }
+  var html = '<div class="sec"><div class="sectl">Detalles de Factura</div>' +
+    r("Numero", '<span class="ac">' + inv.num + '</span>', "ac") +
+    r("Estado", '<span class="bdg ' + inv.status + '">' + inv.label + '</span>') +
+    r("Cliente", inv.client) +
+    r("Contacto", inv.contact) +
+    r("Email", inv.email) +
+    r("Contrato", inv.contract) +
+    r("Orden de Servicio", inv.order) +
+    '</div><div class="sec"><div class="sectl">Valores</div>' +
+    r("Subtotal", "COP " + inv.sub) +
+    r("IVA 19%", "COP " + inv.iva) +
+    '<div class="row"><span class="lb" style="font-weight:600">Total</span><span class="vl ' + sc + '" style="font-family:JetBrains Mono,monospace;font-size:15px;font-weight:700">COP ' + inv.total + '</span></div>' +
+    r("Fecha Emision", inv.issued) +
+    r("Vencimiento", inv.due) +
+    '</div>';
+  if (pct > 0) {
+    html += '<div class="sec"><div class="sectl">Estado de Pago</div>' +
+      '<div class="pw"><div class="pb" style="width:' + pct + '%"></div></div>' +
+      '<div class="pls"><span>Pagado: ' + (inv.paid/1e6).toFixed(1) + 'M</span><span>' + pct + '%</span><span>Pendiente: ' + (inv.remaining/1e6).toFixed(1) + 'M</span></div></div>';
+  }
+  html += '<div class="sec"><div class="sectl">Notas</div><div style="font-size:11px;color:var(--muted);line-height:1.7">' + inv.notes + '</div></div>' +
+    '<div class="sec"><div class="sectl">Historial</div><div class="tl">' + tl + '</div></div>' +
+    '<div class="acts">' +
+    (inv.status !== "paid" ? '<div class="act pr">Registrar Pago</div>' : "") +
+    (inv.status === "overdue" || inv.status === "pending" ? '<div class="act">Enviar Recordatorio</div>' : "") +
+    '<div class="act">Descargar PDF</div></div>';
+  showPanel(inv.num, html);
+}
+
+function openClient(el) {
+  var id = el.getAttribute ? el.getAttribute("data-k") : el;
+  var c = CLI[id];
+  if (!c) return;
+  var html = '<div class="sec"><div class="sectl">Informacion del Cliente</div>' +
+    r("Empresa", c.name) + r("NIT", c.nit) + r("Contacto", c.contact) +
+    r("Email", c.email) + r("Telefono", c.phone) + r("Ciudad", c.city) +
+    '</div><div class="sec"><div class="sectl">Resumen Financiero</div>' +
+    r("Contratos Activos", c.contracts) + r("Total Facturado", c.billed) +
+    '</div><div class="acts"><div class="act pr">Ver Facturas</div><div class="act">Ver Contratos</div><div class="act">Editar</div></div>';
+  showPanel(c.name, html);
+}
+
+function openContract(el) {
+  var id = el.getAttribute ? el.getAttribute("data-k") : el;
+  var c = CON[id];
+  if (!c) return;
+  var html = '<div class="sec"><div class="sectl">Detalles del Contrato</div>' +
+    r("Contrato", c.num) + r("Descripcion", c.title) + r("Cliente", c.client) +
+    r("Valor Total", c.value) + r("Inicio", c.start) + r("Vencimiento", c.end) +
+    r("Estado", '<span class="bdg ' + c.status + '">' + c.label + '</span>') +
+    '</div><div class="acts"><div class="act pr">Nueva Orden de Servicio</div><div class="act">Ver Facturas</div><div class="act">Descargar PDF</div></div>';
+  showPanel(c.num, html);
+}
+
+function openSO(el) {
+  var id = el.getAttribute ? el.getAttribute("data-k") : el;
+  var o = SOS[id];
+  if (!o) return;
+  var html = '<div class="sec"><div class="sectl">Orden de Servicio</div>' +
+    r("Orden", o.num) + r("Descripcion", o.desc) + r("Contrato", o.contract) +
+    r("Cliente", o.client) + r("Valor Autorizado", o.value) +
+    r("Inicio", o.start) + r("Fin", o.end) +
+    r("Estado", '<span class="bdg ' + o.status + '">' + o.label + '</span>') +
+    '</div><div class="acts"><div class="act pr">Crear Factura</div><div class="act">Ver Facturas</div></div>';
+  showPanel(o.num, html);
+}
+</script>
+</body>
+</html>
